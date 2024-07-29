@@ -1,8 +1,12 @@
 package com.example.surveybackend.survey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity(name="survey_details")
 public class Survey {
@@ -16,6 +20,10 @@ public class Survey {
     private Integer id;
     private String name;
     private String json;
+
+    @OneToMany(mappedBy = "survey")
+    @JsonIgnore
+    private List<Result> results;
 
     public Survey(Integer id, String name, String json) {
         this.id = id;
@@ -45,5 +53,13 @@ public class Survey {
 
     public void setJson(String json) {
         this.json = json;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 }
