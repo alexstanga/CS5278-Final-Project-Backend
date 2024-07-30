@@ -1,10 +1,7 @@
 package com.example.surveybackend.survey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -19,6 +16,9 @@ public class Survey {
     @GeneratedValue
     private Integer id;
     private String name;
+
+    @Lob
+    @Column( length = 100000 )
     private String json;
 
     @OneToMany(mappedBy = "survey")

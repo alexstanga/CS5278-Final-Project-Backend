@@ -16,10 +16,11 @@ public class Result {
     @Id
     @GeneratedValue
     private Integer id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private Survey survey;
+    @Lob
+    @Column( length = 100000 )
     private String json;
 
     public Result(Integer id, Survey survey, String json) {
