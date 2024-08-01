@@ -34,6 +34,11 @@ public class SurveyJpaResource {
         this.surveyRepository = surveyRepository;
     }
 
+    @GetMapping("/jpa/surveys/init")
+    public void initSurvey(){
+        surveyJpaService.init();
+    }
+
     @GetMapping("/jpa/surveys")
     public List<Survey> retrieveAllSurveys() {
         return surveyRepository.findAll();

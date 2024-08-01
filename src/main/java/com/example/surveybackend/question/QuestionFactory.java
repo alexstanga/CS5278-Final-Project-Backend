@@ -3,7 +3,7 @@ package com.example.surveybackend.question;
 import java.util.List;
 
 public class QuestionFactory {
-    public Question createQuestion(String type, String name, String title, List<String> choices) {
+    public Question createQuestion(String type, String name, String title, List<Choice> choices) {
         switch(type){
             case "text":
                 return new TextQuestion(name, title);

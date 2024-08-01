@@ -3,6 +3,7 @@ package com.example.surveybackend.survey;
 import com.example.surveybackend.jpa.ResultRepository;
 import com.example.surveybackend.jpa.ResultResponseRepository;
 import com.example.surveybackend.jpa.SurveyRepository;
+import com.example.surveybackend.question.Choice;
 import com.example.surveybackend.question.Question;
 import com.example.surveybackend.question.RadioGroupQuestion;
 import com.example.surveybackend.question.TextQuestion;
@@ -27,11 +28,8 @@ public class SurveyJpaService {
     @Autowired
     private ResultResponseRepository resultResponseRepository;
 
-    public static Survey survey1 = new Survey();
-    public static List<Question> questions1 = new ArrayList<>();
-    private static ObjectMapper objectMapper;
-
-    {
+    public void init() {
+        List<Question> questions1 = new ArrayList<>();
         String json = " ";
         for (int i = 1; i <= 10; i++) {
             Question question;
@@ -41,18 +39,20 @@ public class SurveyJpaService {
                 question = new RadioGroupQuestion(
                         "quetion" + i,
                         "Question" + i,
-                        Arrays.asList("Option A", "Option B", "Option C")
+                        Arrays.asList(new Choice("Option A", 1),
+                                new Choice("Option B", 2),
+                                new Choice("Option C", 3))
                 );
             }
             questions1.add(question);
         }
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
             json = objectMapper.writeValueAsString(questions1);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        survey1.setName("Survey1");
-        survey1.setJson(json);
+        Survey survey1 = new Survey(1, "Survey1", json);
         surveyRepository.save(survey1);
     }
 
