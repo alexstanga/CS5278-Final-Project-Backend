@@ -16,6 +16,7 @@ public class ResultResponse {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "result_id")
+    @JsonIgnore
     private Result result;
 
     private String question;

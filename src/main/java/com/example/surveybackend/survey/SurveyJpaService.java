@@ -3,17 +3,22 @@ package com.example.surveybackend.survey;
 import com.example.surveybackend.jpa.ResultRepository;
 import com.example.surveybackend.jpa.ResultResponseRepository;
 import com.example.surveybackend.jpa.SurveyRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Service
 public class SurveyJpaService {
 
+    @Autowired
     private SurveyRepository surveyRepository;
+    @Autowired
     private ResultRepository resultRepository;
+    @Autowired
     private ResultResponseRepository resultResponseRepository;
 
     public Result saveResult(Integer surveyId, Map<String, String> responses) {

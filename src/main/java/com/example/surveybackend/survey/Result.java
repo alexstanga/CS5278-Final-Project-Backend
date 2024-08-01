@@ -18,7 +18,8 @@ public class Result {
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
-    private Integer survey;
+    @JsonIgnore
+    private Survey survey;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "result")
     private List<ResultResponse> resultResponses;
@@ -26,7 +27,7 @@ public class Result {
     @Column( length = 100000 )
     private String json;
 
-    public Result(Integer id, Integer survey, String json) {
+    public Result(Integer id, Survey survey, String json) {
         this.id = id;
         this.survey = survey;
         this.json = json;
@@ -40,11 +41,11 @@ public class Result {
         this.id = id;
     }
 
-    public Integer getSurvey() {
+    public Survey getSurvey() {
         return survey;
     }
 
-    public void setSurvey(Integer survey) {
+    public void setSurvey(Survey survey) {
         this.survey = survey;
     }
 

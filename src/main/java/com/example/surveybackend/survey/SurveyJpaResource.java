@@ -1,6 +1,7 @@
 package com.example.surveybackend.survey;
 
 import com.example.surveybackend.jpa.ResultResponseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import com.example.surveybackend.jpa.ResultRepository;
@@ -23,15 +24,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class SurveyJpaResource {
 
+    @Autowired
+    private SurveyJpaService surveyJpaService;
+    @Autowired
     private SurveyRepository surveyRepository;
-    private ResultRepository resultRepository;
 
-    private ResultResponseRepository resultResponseRepository;
-
-    public SurveyJpaResource(SurveyRepository surveyRepository, ResultRepository resultRepository, ResultResponseRepository resultResponseRepository) {
-        this.resultRepository = resultRepository;
+    public SurveyJpaResource(SurveyJpaService surveyJpaService, SurveyRepository surveyRepository) {
+        this.surveyJpaService = surveyJpaService;
         this.surveyRepository = surveyRepository;
-        this.resultResponseRepository = resultResponseRepository;
     }
 
     @GetMapping("/jpa/surveys")
@@ -72,29 +72,20 @@ public class SurveyJpaResource {
 
     @PostMapping("/jpa/surveys/{id}/results")
     public ResponseEntity<Object> createResultForSurvey(@PathVariable int id, @RequestBody Map<String, String> responses){
-        // Find the existing Survey by ID
-        Survey survey = surveyRepository.findById(id)
-                .orElseThrow(() -> new SurveyNotFoundException("ID: " + id));
+        try {
+            Result result = surveyJpaService.saveResult(id, responses);
 
-        // Create a new Result
-        Result result = new Result();
-        result.setSurvey(survey);
-        resultRepository.save(result);
+            // Construct the URI for the newly created result
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{resultId}")
+                    .buildAndExpand(result.getId())
+                    .toUri();
 
-        // Create ResultResponse entries
-        List<ResultResponse> resultResponses = new ArrayList<>();
-        for (Map.Entry<String, String> entry : responses.entrySet()) {
-            ResultResponse resultResponse = new ResultResponse(entry.getKey(), entry.getValue());
-            resultResponse.setResult(result);
-            resultResponses.add(resultResponse);
-            System.out.println("Added Response: " + resultResponse.getResponse());
+            // Return 201 Created status with the Location header set to the URI of the new resource
+            return ResponseEntity.created(location).build();
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        // Save ResultResponses entries
-        result.setResultResponses(resultResponses);
-        resultResponseRepository.saveAll(resultResponses);
-
-        return ResponseEntity.ok(resultResponses);
     }
 
     @GetMapping("/jpa/surveys/{id}/results")
