@@ -21,7 +21,7 @@ public class Survey {
     @Column( length = 100000 )
     private String json;
 
-    @OneToMany(mappedBy = "survey")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "survey")
     @JsonIgnore
     private List<Result> results;
 

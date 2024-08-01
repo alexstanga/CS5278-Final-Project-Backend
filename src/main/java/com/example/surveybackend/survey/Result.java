@@ -17,13 +17,16 @@ public class Result {
     @GeneratedValue
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Survey survey;
+    @JoinColumn(name = "survey_id")
+    private Integer survey;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "result")
+    private List<ResultResponse> resultResponses;
     @Lob
     @Column( length = 100000 )
     private String json;
 
-    public Result(Integer id, Survey survey, String json) {
+    public Result(Integer id, Integer survey, String json) {
         this.id = id;
         this.survey = survey;
         this.json = json;
@@ -37,11 +40,11 @@ public class Result {
         this.id = id;
     }
 
-    public Survey getSurvey() {
+    public Integer getSurvey() {
         return survey;
     }
 
-    public void setSurvey(Survey survey) {
+    public void setSurvey(Integer survey) {
         this.survey = survey;
     }
 
@@ -51,5 +54,13 @@ public class Result {
 
     public void setJson(String json) {
         this.json = json;
+    }
+
+    public List<ResultResponse> getResultResponses() {
+        return resultResponses;
+    }
+
+    public void setResultResponses(List<ResultResponse> resultResponses) {
+        this.resultResponses = resultResponses;
     }
 }
