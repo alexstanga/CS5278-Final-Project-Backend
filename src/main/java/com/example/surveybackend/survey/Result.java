@@ -4,12 +4,14 @@ import com.example.surveybackend.survey.Survey;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 public class Result {
 
-    protected Result() {
+    public Result() {
 
     }
 
@@ -26,6 +28,12 @@ public class Result {
     @Lob
     @Column( length = 100000 )
     private String json;
+
+    @ElementCollection
+    @MapKeyColumn(name = "category")
+    @Column(name = "total_score")
+    @CollectionTable(name = "result_category_scores", joinColumns = @JoinColumn(name = "result_id"))
+    private Map<String, Integer> categoryScores = new HashMap<>();
 
     public Result(Integer id, Survey survey, String json) {
         this.id = id;
@@ -63,5 +71,13 @@ public class Result {
 
     public void setResultResponses(List<ResultResponse> resultResponses) {
         this.resultResponses = resultResponses;
+    }
+
+    public Map<String, Integer> getCategoryScores() {
+        return categoryScores;
+    }
+
+    public void setCategoryScores(Map<String, Integer> categoryScores) {
+        this.categoryScores = categoryScores;
     }
 }

@@ -7,15 +7,16 @@ import com.example.surveybackend.question.Choice;
 import com.example.surveybackend.question.Question;
 import com.example.surveybackend.question.RadioGroupQuestion;
 import com.example.surveybackend.question.TextQuestion;
+import com.example.surveybackend.recommendation.PdfGenerator;
+import com.example.surveybackend.recommendation.Recommendation;
+import com.example.surveybackend.recommendation.RecommendationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Service
@@ -27,6 +28,8 @@ public class SurveyJpaService {
     private ResultRepository resultRepository;
     @Autowired
     private ResultResponseRepository resultResponseRepository;
+
+    private RecommendationService recommendationService;
 
     public void init() {
         List<Question> questions1 = new ArrayList<>();
@@ -56,7 +59,7 @@ public class SurveyJpaService {
         surveyRepository.save(survey1);
     }
 
-    public Result saveResult(Integer surveyId, Map<String, String> responses) {
+    public Result saveResult(Integer surveyId, Map<String, Map<String, ResultResponseDto>> responses) {
         // Find the existing Survey by ID
         Survey survey = surveyRepository.findById(surveyId)
                 .orElseThrow(() -> new SurveyNotFoundException("ID: " + surveyId));
@@ -68,17 +71,65 @@ public class SurveyJpaService {
 
         // Create ResultResponse entries
         List<ResultResponse> resultResponses = new ArrayList<>();
-        for (Map.Entry<String, String> entry : responses.entrySet()) {
-            ResultResponse resultResponse = new ResultResponse(entry.getKey(), entry.getValue());
-            resultResponse.setResult(result);
-            resultResponses.add(resultResponse);
+        for (Map.Entry<String, Map<String, ResultResponseDto>> entry : responses.entrySet()) {
+            String questionType = entry.getKey();
+            Map<String, ResultResponseDto> questions = entry.getValue();
+
+            for (Map.Entry<String, ResultResponseDto> questionEntry : questions.entrySet()) {
+                String questionName = questionEntry.getKey();
+                ResultResponseDto resultResponseDto = questionEntry.getValue();
+
+                ResultResponse resultResponse = new ResultResponse();
+                resultResponse.setQuestion(questionName);
+                resultResponse.setResponse(resultResponseDto.getAnswer());
+                resultResponse.setScore(resultResponseDto.getScore());
+                resultResponse.setResult(result);
+
+                resultResponses.add(resultResponse);
+            }
+
+
         }
 
-        // Save ResultResponses entries
-        result.setResultResponses(resultResponses);
+        // Save ResultResponses entries;
         resultResponseRepository.saveAll(resultResponses);
 
+        // Associate ResultResponses with Result
+        result.setResultResponses(resultResponses);
+        resultRepository.save(result);
+
         return result;
+    }
+
+    // Calculate the total scores for each survey section.
+    public void calculateTotalScore(Integer resultId) throws IOException {
+        // Initialize a map to hold the total scores for each category
+        Map<String, Integer> categoryScores = new HashMap<>();
+        // Find the existing ResultResponses by ID
+        Result result = resultRepository.findById(resultId)
+                .orElseThrow(() -> new SurveyNotFoundException("ID: " + resultId));
+        for (ResultResponse response : result.getResultResponses()){
+            String questionId = response.getQuestion();
+            String category = questionId.substring(0, questionId.lastIndexOf('-'));
+
+            // Get the score for the current response
+            int score = response.getScore();
+
+            // Update the category score in the map
+            categoryScores.merge(category, score, Integer::sum);
+        }
+
+        result.setCategoryScores(categoryScores);
+        resultRepository.save(result);
+
+        System.out.println("end");
+
+        this.recommendationService = new RecommendationService("recommendations.json");
+        Map<String, String> recommendations = recommendationService.getRecommendationsForCategories(categoryScores);
+
+
+        PdfGenerator pdfGenerator = new PdfGenerator();
+        pdfGenerator.createPdf("Survey_Results.pdf", recommendations);
     }
 
     //TODO

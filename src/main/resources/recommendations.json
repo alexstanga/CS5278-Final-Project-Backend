@@ -1,0 +1,15 @@
+{
+  "phq-9": [
+    { "score": 4, "concern": "no","recommendation": "No concerns." },
+    { "score": 9, "concern": "yes","recommendation": "Keep an eye out if you start feeling worse." },
+    { "score": 14, "concern": "yes","recommendation": "Talk to your doctor about some options to help treat your unhappiness." },
+    { "score": 19, "concern": "yes", "recommendation": "We highly recommend you talk to your doctor about your unhappiness and treatment options." },
+    { "score": 27, "concern": "yes", "recommendation": "Please talk to your doctor about your unhappiness. We recommend asking your doctor about additional treatment such as seeing a psychiatrist, mental health therapy, an/or medications as prescribed." }
+  ],
+  "gad-7": [
+    { "score": 5, "concern": "no", "recommendation": "No concerns."  },
+    { "score": 10, "concern": "yes", "recommendation": " Keep an eye out if you start to feel worse or if you experience more stress." },
+    { "score": 15, "concern": "yes", "recommendation": "Talk to your doctor about some treatment options for stress." },
+    { "score": 21, "concern": "yes", "recommendation": "Please talk to your doctor about your stress. We recommend asking your doctor about additional treatment such as seeing a psychiatrist, mental health therapy, an/or medications as prescribed." }
+  ]
+}

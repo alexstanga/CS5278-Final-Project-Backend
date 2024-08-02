@@ -6,10 +6,6 @@ import jakarta.persistence.*;
 @Entity
 public class ResultResponse {
 
-    protected ResultResponse() {
-
-    }
-
     @Id
     @GeneratedValue
     private Integer id;
@@ -22,10 +18,15 @@ public class ResultResponse {
     private String question;
     private String response;
 
-    public ResultResponse(String question, String response) {
+    private int score;
+
+    public ResultResponse(String question, String response, int score) {
         this.question = question;
         this.response = response;
+        this.score = score;
     }
+
+    public ResultResponse() {}
 
     public Integer getId() {
         return id;
@@ -58,4 +59,8 @@ public class ResultResponse {
     public void setResponse(String response) {
         this.response = response;
     }
+
+    public int getScore() { return score; }
+
+    public void setScore(int score) { this.score = score; }
 }

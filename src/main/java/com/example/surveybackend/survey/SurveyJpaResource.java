@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,10 +77,10 @@ public class SurveyJpaResource {
     }
 
     @PostMapping("/jpa/surveys/{id}/results")
-    public ResponseEntity<Object> createResultForSurvey(@PathVariable int id, @RequestBody Map<String, String> responses){
+    public ResponseEntity<Object> createResultForSurvey(@PathVariable int id, @RequestBody Map<String, Map<String, ResultResponseDto>> responses){
         try {
             Result result = surveyJpaService.saveResult(id, responses);
-
+            surveyJpaService.calculateTotalScore(result.getId());
             // Construct the URI for the newly created result
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{resultId}")
@@ -90,6 +91,8 @@ public class SurveyJpaResource {
             return ResponseEntity.created(location).build();
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
