@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,8 @@ public class RecommendationService {
     }
 
     private String getRecommendationForScore(List<Recommendation> recommendations, int score) {
+        recommendations.sort(Comparator.comparingInt(Recommendation::getScore));
+
         // Find the appropriate recommendation based on the score
         for (Recommendation recommendation : recommendations) {
             if (score <= recommendation.getScore()) {
