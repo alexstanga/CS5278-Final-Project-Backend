@@ -7,8 +7,7 @@ import com.example.surveybackend.question.Choice;
 import com.example.surveybackend.question.Question;
 import com.example.surveybackend.question.RadioGroupQuestion;
 import com.example.surveybackend.question.TextQuestion;
-import com.example.surveybackend.recommendation.PdfGenerator;
-import com.example.surveybackend.recommendation.Recommendation;
+import com.example.surveybackend.pdf.PdfGenerator;
 import com.example.surveybackend.recommendation.RecommendationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Predicate;
 
 @Service
 public class SurveyJpaService {
