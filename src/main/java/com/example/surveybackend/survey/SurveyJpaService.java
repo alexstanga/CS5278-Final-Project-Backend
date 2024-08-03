@@ -127,7 +127,7 @@ public class SurveyJpaService {
 
 
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.createPdf("Survey_Results.pdf", recommendations);
+        pdfGenerator.createPdf("Survey_Results_" + resultId + ".pdf", recommendations);
     }
 
     //TODO

@@ -2,22 +2,24 @@ package com.example.surveybackend.survey;
 
 import com.example.surveybackend.jpa.ResultResponseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import com.example.surveybackend.jpa.ResultRepository;
 import com.example.surveybackend.jpa.SurveyRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -77,6 +79,7 @@ public class SurveyJpaResource {
     }
 
     @PostMapping("/jpa/surveys/{id}/results")
+    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Object> createResultForSurvey(@PathVariable int id, @RequestBody Map<String, Map<String, ResultResponseDto>> responses){
         try {
             Result result = surveyJpaService.saveResult(id, responses);
@@ -87,8 +90,13 @@ public class SurveyJpaResource {
                     .buildAndExpand(result.getId())
                     .toUri();
 
+            // Create a map to hold the result data
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("result", result);
+            responseBody.put("location", location.toString());
+
             // Return 201 Created status with the Location header set to the URI of the new resource
-            return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).body(responseBody);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IOException e) {
@@ -105,6 +113,19 @@ public class SurveyJpaResource {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/jpa/download/{id}")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<InputStreamResource> retrieveSurveyPDF(@PathVariable int id) throws FileNotFoundException {
+        String filePath = "Survey_Results_" + id + ".pdf";
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+        InputStreamResource resource = new InputStreamResource(fileInputStream);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePath);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
 }
