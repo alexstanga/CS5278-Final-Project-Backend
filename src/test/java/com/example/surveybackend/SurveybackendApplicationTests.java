@@ -5,11 +5,10 @@ import com.example.surveybackend.jpa.SurveyRepository;
 import com.example.surveybackend.pdf.CompositePDFComponent;
 import com.example.surveybackend.pdf.PDFBuilder;
 import com.example.surveybackend.pdf.PDFComponent;
-import com.example.surveybackend.pdf.PdfGenerator;
-import com.example.surveybackend.recommendation.RecommendationService;
+
 import com.example.surveybackend.survey.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.pdfbox.pdmodel.PDDocument;
+
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.InputStreamResource;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.*;
 

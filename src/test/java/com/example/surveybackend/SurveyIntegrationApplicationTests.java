@@ -7,13 +7,16 @@ import com.example.surveybackend.recommendation.RecommendationService;
 import com.example.surveybackend.survey.Result;
 import com.example.surveybackend.survey.ResultResponse;
 import com.example.surveybackend.survey.SurveyJpaService;
-import org.junit.Before;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Arrays;
@@ -22,10 +25,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class SurveyIntegrationApplicationTests {
 
@@ -45,7 +47,7 @@ public class SurveyIntegrationApplicationTests {
     private PdfGenerator pdfGenerator;  // Mocked dependency
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Initialize mocks
         MockitoAnnotations.initMocks(this);
