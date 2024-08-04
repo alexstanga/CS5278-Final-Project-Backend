@@ -16,7 +16,7 @@ public class HeaderComponent implements PDFComponent{
         this.title = title;
     }
     @Override
-    public void draw(PDPageContentStream contentStream) throws IOException {
+    public void draw(PDPageContentStream contentStream, PDFBuilder builder) throws IOException {
         contentStream.setFont(BOLD_FONT, 16);
         contentStream.beginText();
         contentStream.newLineAtOffset(25, 750);

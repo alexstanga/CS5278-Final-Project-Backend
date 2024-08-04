@@ -8,7 +8,7 @@ import java.util.List;
 @Entity(name="survey_details")
 public class Survey {
 
-    protected Survey() {
+    public Survey() {
 
     }
 

@@ -5,6 +5,11 @@ public class ResultResponseDto {
     private String answer;
     private int score;
 
+    public ResultResponseDto(String answer, int score) {
+        this.answer = answer;
+        this.score = score;
+    }
+
     public String getAnswer() {
         return answer;
     }

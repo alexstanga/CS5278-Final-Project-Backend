@@ -57,6 +57,11 @@ public class SurveyJpaService {
         surveyRepository.save(survey1);
     }
 
+    public Survey createSurvey(Survey survey) {
+        surveyRepository.save(survey);
+        return survey;
+    }
+
     public Result saveResult(Integer surveyId, Map<String, Map<String, ResultResponseDto>> responses) {
         // Find the existing Survey by ID
         Survey survey = surveyRepository.findById(surveyId)
@@ -120,23 +125,26 @@ public class SurveyJpaService {
         result.setCategoryScores(categoryScores);
         resultRepository.save(result);
 
-        System.out.println("end");
 
         this.recommendationService = new RecommendationService("recommendations.json");
         Map<String, String> recommendations = recommendationService.getRecommendationsForCategories(categoryScores);
 
 
         PdfGenerator pdfGenerator = new PdfGenerator();
-        pdfGenerator.createPdf("Survey_Results_" + resultId + ".pdf", recommendations);
+        pdfGenerator.createPdf("Survey_Results_" + resultId + ".pdf", recommendations, findHighestScore(categoryScores));
     }
 
-    //TODO
-    public Survey createSurvey(){
-        // Create new SurveyGroup with multiple questions
+    public Integer findHighestScore(Map<String, Integer> categoryScores ){
+        if (categoryScores == null || categoryScores.isEmpty()) { return 0; }
 
-        // Convert SurveyGroup to Survey Object
+        int highestScore = Integer.MIN_VALUE;
 
-        // return Survey Object
-        return null;
+        for (Integer score : categoryScores.values()) {
+            if (score > highestScore) {
+                highestScore = score;
+            }
+        }
+
+        return highestScore;
     }
 }

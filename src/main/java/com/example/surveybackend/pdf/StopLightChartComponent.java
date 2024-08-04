@@ -20,7 +20,7 @@ public class StopLightChartComponent implements PDFComponent {
         this.overallScore = overallScore;
     }
     @Override
-    public void draw(PDPageContentStream contentStream) throws IOException {
+    public void draw(PDPageContentStream contentStream, PDFBuilder builder) throws IOException {
         Color red = new Color(255, 0, 0);
         Color yellow = new Color(255, 255, 0);
         Color green = new Color(0, 255, 0);
