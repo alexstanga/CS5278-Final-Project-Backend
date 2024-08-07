@@ -3,6 +3,11 @@ package com.example.surveybackend.survey;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+/**
+ * Represents a response to a single question in a survey result.
+ * This entity stores information about a specific response, including
+ * the associated result, question, response text, and score.
+ */
 @Entity
 public class ResultResponse {
 

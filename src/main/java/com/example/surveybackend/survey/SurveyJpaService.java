@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Service class for handling operations related to surveys, results, and PDF generation.
+ */
 @Service
 public class SurveyJpaService {
 
@@ -29,6 +32,9 @@ public class SurveyJpaService {
 
     private RecommendationService recommendationService;
 
+    /**
+     * Initialize a default survey with 10 questions (alternating between text and radio group questions).
+     */
     public void init() {
         List<Question> questions1 = new ArrayList<>();
         String json = " ";
@@ -57,11 +63,24 @@ public class SurveyJpaService {
         surveyRepository.save(survey1);
     }
 
+    /**
+     * Create a new survey and save it to the repository.
+     *
+     * @param survey Survey object to create
+     * @return The saved survey
+     */
     public Survey createSurvey(Survey survey) {
         surveyRepository.save(survey);
         return survey;
     }
 
+    /**
+     * Save a result for a specific survey based on the provided responses.
+     *
+     * @param surveyId ID of the survey
+     * @param responses Map of responses, categorized by question type
+     * @return The saved result
+     */
     public Result saveResult(Integer surveyId, Map<String, Map<String, ResultResponseDto>> responses) {
         // Find the existing Survey by ID
         Survey survey = surveyRepository.findById(surveyId)
@@ -104,6 +123,12 @@ public class SurveyJpaService {
         return result;
     }
 
+    /**
+     * Calculate the total scores for each category based on result responses and generate a PDF report.
+     *
+     * @param resultId ID of the result to process
+     * @throws IOException If an I/O error occurs during PDF generation
+     */
     // Calculate the total scores for each survey section.
     public void calculateTotalScore(Integer resultId) throws IOException {
         // Initialize a map to hold the total scores for each category
@@ -134,6 +159,12 @@ public class SurveyJpaService {
         pdfGenerator.createPdf("Survey_Results_" + resultId + ".pdf", recommendations, findHighestScore(categoryScores));
     }
 
+    /**
+     * Find the highest score from the given category scores.
+     *
+     * @param categoryScores Map of category scores
+     * @return The highest score
+     */
     public Integer findHighestScore(Map<String, Integer> categoryScores ){
         if (categoryScores == null || categoryScores.isEmpty()) { return 0; }
 

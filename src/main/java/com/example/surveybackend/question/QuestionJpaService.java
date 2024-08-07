@@ -6,13 +6,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+/**
+ * Service class for managing survey questions in a JPA context.
+ */
 @Service
 public class QuestionJpaService {
 
     @Autowired
     private QuestionRepository questionRepository;
 
-    // Init function called by QuestionJpaResource to create sample questions
+    /**
+     * Initializes the database with sample questions.
+     * This method is called by the QuestionJpaResource to populate the repository with sample data.
+     */
     public void init() {
         for (int i = 1; i <= 2; i++) {
             Question question;

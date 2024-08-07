@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Represents the result of a survey.
+ * This entity stores information about a survey result, including the survey reference,
+ * result responses, JSON representation of the responses, and category scores.
+ */
 @Entity
 public class Result {
 
@@ -18,11 +23,16 @@ public class Result {
     @Id
     @GeneratedValue
     private Integer id;
+
+    // Many-to-one relationship with Survey entity
+    // The survey this result is associated with
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id")
     @JsonIgnore
     private Survey survey;
 
+    // One-to-many relationship with ResultResponse entity
+    // List of responses associated with this result
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "result")
     private List<ResultResponse> resultResponses;
     @Lob

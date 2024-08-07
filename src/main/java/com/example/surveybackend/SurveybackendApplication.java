@@ -12,7 +12,7 @@ public class SurveybackendApplication {
 		SpringApplication.run(SurveybackendApplication.class, args);
 
 		//Initialize the database
-		//initializeDatabase();
+		initializeDatabase();
 	}
 
 	private static void initializeDatabase() {

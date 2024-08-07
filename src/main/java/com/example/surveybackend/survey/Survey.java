@@ -5,6 +5,11 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
+/**
+ * Represents a survey entity in the system.
+ * This class stores the details of a survey, including its name,
+ * JSON representation, and associated results.
+ */
 @Entity(name="survey_details")
 public class Survey {
 

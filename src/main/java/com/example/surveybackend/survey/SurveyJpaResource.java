@@ -24,6 +24,9 @@ import java.util.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+/**
+ * REST controller for managing surveys and their results.
+ */
 @RestController
 public class SurveyJpaResource {
 
@@ -37,16 +40,30 @@ public class SurveyJpaResource {
         this.surveyRepository = surveyRepository;
     }
 
+    /**
+     * Endpoint to initialize survey data.
+     */
     @GetMapping("/jpa/surveys/init")
     public void initSurvey(){
         surveyJpaService.init();
     }
 
+    /**
+     * Endpoint to retrieve all surveys.
+     *
+     * @return List of all surveys
+     */
     @GetMapping("/jpa/surveys")
     public List<Survey> retrieveAllSurveys() {
         return surveyRepository.findAll();
     }
 
+    /**
+     * Endpoint to retrieve a survey by its ID.
+     *
+     * @param id ID of the survey to retrieve
+     * @return EntityModel of the survey with HATEOAS links
+     */
     @GetMapping("/jpa/surveys/{id}")
     public EntityModel<Survey> retrieveSurvey(@PathVariable int id) {
         Optional<Survey> survey = surveyRepository.findById(id);
@@ -61,11 +78,22 @@ public class SurveyJpaResource {
         return entityModel;
     }
 
+    /**
+     * Endpoint to delete a survey by its ID.
+     *
+     * @param id ID of the survey to delete
+     */
     @DeleteMapping("/jpa/surveys/{id}")
     public void deleteSurvey(@PathVariable int id) {
         surveyRepository.deleteById(id);
     }
 
+    /**
+     * Endpoint to create a new survey.
+     *
+     * @param survey Survey object to create
+     * @return ResponseEntity with location header of the created survey
+     */
     @PostMapping("/jpa/surveys")
     public ResponseEntity<Survey> createSurvey(@RequestBody Survey survey) {
         Survey savedSurvey = surveyRepository.save(survey);
@@ -78,6 +106,13 @@ public class SurveyJpaResource {
         return ResponseEntity.created(location).build();
     }
 
+    /**
+     * Endpoint to create a result for a specific survey.
+     *
+     * @param id        ID of the survey
+     * @param responses Map of responses to be saved
+     * @return ResponseEntity with the location header of the new result
+     */
     @PostMapping("/jpa/surveys/{id}/results")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<Object> createResultForSurvey(@PathVariable int id, @RequestBody Map<String, Map<String, ResultResponseDto>> responses){
@@ -104,6 +139,12 @@ public class SurveyJpaResource {
         }
     }
 
+    /**
+     * Endpoint to retrieve results for a specific survey.
+     *
+     * @param id ID of the survey
+     * @return ResponseEntity with a list of results or a 404 Not Found status
+     */
     @GetMapping("/jpa/surveys/{id}/results")
     public ResponseEntity<List<Result>> retrieveResultsForSurvey(@PathVariable int id) {
         Optional<Survey> survey = surveyRepository.findById(id);
@@ -115,6 +156,13 @@ public class SurveyJpaResource {
         }
     }
 
+    /**
+     * Endpoint to download the PDF of survey results.
+     *
+     * @param id ID of the survey
+     * @return ResponseEntity with InputStreamResource for the PDF file
+     * @throws FileNotFoundException if the PDF file is not found
+     */
     @GetMapping("/jpa/download/{id}")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<InputStreamResource> retrieveSurveyPDF(@PathVariable int id) throws FileNotFoundException {
